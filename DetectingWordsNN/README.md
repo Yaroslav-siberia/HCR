@@ -4,5 +4,11 @@
 3. Скачать тренированную НС по ссылке https://drive.google.com/file/d/1VbIRYsb_T5RTFhtPwdONiQUXqOmsAZg0/view?usp=sharing
 Содержимое архива распаковать в директорию model
 
+[Содержимое]
+1. Весь рабочий код находится в директории src
+2. Detecting Words NN.ipynb - содержит в себе весь исполняемый код проекта
 
-1. Detecting Words NN.ipynb 
+[Запуск]
+1. Для работы нужен файл DetectingWordsNN/srcinfer.py
+2. Основная функция extract_words
+3. Пример запуска находится в конце файла
