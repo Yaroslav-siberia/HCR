@@ -8,3 +8,7 @@ contains Word Detectors and HandWritten Character Recognition for Russian Langua
 # DetectingWordsNN
 Детектирование слов рукописного текста на изображении с использованием нейронных сетей
 Более подробное описание и инструкция находятся внутри DetectingWordsNN
+
+# DetectingWords
+Детектирование слов рукописного текста на изображении с использованием инструментов Opencv(морфология, бинаризация)
+Более подробное описание и инструкция находятся внутри DetectingWords
