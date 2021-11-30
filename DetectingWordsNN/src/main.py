@@ -16,10 +16,10 @@ def get_img_files(data_dir: Path) -> List[Path]:
 
 def extract_words(input_path,output_path):
     if os.path.isdir(Path(input_path)):
-        if len(Path(input_path).files('*.jpg'))== 0:
+        if len(get_img_files(Path(input_path)))== 0:
             print('Изображений для обработки не обнаружено. проверьте путь')
         else:
-            print(f"Найдено {len(Path(input_path).files('*.jpg'))} изображений для обработки.")
+            print(f"Найдено {len(get_img_files(Path(input_path)))} изображений для обработки.")
     else:
         print(f'директория {input_path} не существует')
     #
