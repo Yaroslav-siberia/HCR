@@ -12,7 +12,7 @@ from eval import evaluate
 from net import WordDetectorNet
 from visualization import visualize_and_plot
 
-
+'''
 def main():
     parser = argparse.ArgumentParser()
     # поределяем на каком устройстве будет работать сеть cuda - видеокарта
@@ -44,11 +44,12 @@ def main():
 
 
 #if __name__ == '__main__':
-#    main()
+#    main()'''
 
 
 
-def extract_words(input_path,output_path, delta):
+
+def extract_wordsNN(input_path,output_path, delta):
     '''
 
     :param input_path: директория с изображениями для поиска
@@ -70,12 +71,11 @@ def extract_words(input_path,output_path, delta):
     else:
         os.makedirs(output_path)
         print(f'директория {output_path} создана')
-
-    #определяем устройство работы
+    # определяем устройство работы
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print('Using device:', device)
 
-    #подгружаем нашу нейронную сеть
+    # подгружаем нашу нейронную сеть
     net = WordDetectorNet()  # получаем архитектуру нашей нейронной сети без весов
     #  загружаем веса нашей нейронной сети
     net.load_state_dict(torch.load('../model/weights', map_location=device))
@@ -106,5 +106,4 @@ def extract_words(input_path,output_path, delta):
         cv2.imshow('detected words', img2)
         cv2.waitKey(0)
 
-extract_words('../data/input', '../data/output', 5)
 
