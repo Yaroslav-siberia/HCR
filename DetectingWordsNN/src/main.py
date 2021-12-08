@@ -42,9 +42,9 @@ def extract_words(input_path,output_path):
     for fn_img in files:
         image = cv2.imread(fn_img,cv2.COLOR_BGR2RGB)
         #уменьшаем изображение, 900 размер большей стороны в пикселях
-        img = resizing_img(image,900)
+        img = resizing_img(image,1300)
         # сканирование изображения
-        ans, img = scaner(img)
+        #ans, img = scaner(img)
         f_name=os.path.basename(fn_img)
         # сохраняем промежуточные результаты
         cv2.imwrite(str(os.path.join(middle_path, f_name)),img)
@@ -52,7 +52,7 @@ def extract_words(input_path,output_path):
     # вызываем функцию поиска слов нейронной сетью
     extract_wordsNN(middle_path,output_path,5)
 
-extract_words('/home/ysiberia/PycharmProjects/HandWrittenTR/originalA5', '/home/ysiberia/PycharmProjects/HandWrittenTR/resA5')
+extract_words('/home/ysiberia/Документы/GitHub/HCR/DetectingWordsNN/data/input', '/home/ysiberia/Документы/GitHub/HCR/DetectingWordsNN/data/output')
 
 
 

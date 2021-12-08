@@ -59,10 +59,13 @@ def extract_wordsNN(input_path,output_path, delta):
     '''
     #проверяем папку с исходными изображениями
     if os.path.isdir(Path(input_path)):
-        if len(Path(input_path).files('*.jpg'))== 0:
+        res=[]
+        for ext in ['*.png', '*.jpeg', '*.jpg', '*.bmp']:
+            res += Path(input_path).files(ext)
+        if len(res)== 0:
             print('Изображений для обработки не обнаружено. проверьте путь')
         else:
-            print(f"Найдено {len(Path(input_path).files('*.jpg'))} изображений для обработки.")
+            print(f"Найдено {len(res)} изображений для обработки.")
     else:
         print(f'директория {input_path} не существует')
     #проверяем папку ку складываем
@@ -88,6 +91,7 @@ def extract_wordsNN(input_path,output_path, delta):
     #приступаем к работе !!!!!!!!!!!!!
     # цикл по изображениям и спискам детектов на каждом
     for i, (img, aabbs) in enumerate(zip(res.batch_imgs, res.batch_aabbs)):
+        print(f'Processing {i} image')
         f = loader.get_scale_factor(i) # определяем направление изображения
         aabbs = [aabb.scale(1 / f, 1 / f) for aabb in aabbs] # применяем это к рамкам
         img , img_name = loader.get_original_img_with_name(i) # получаем оригинальное изобра и его имя
@@ -99,11 +103,13 @@ def extract_wordsNN(input_path,output_path, delta):
             file_name = output_path+'/' + img_name.split('.')[0] + '_' + str(index) + '.' + img_name.split('.')[1]
             try:
                 cv2.imwrite(file_name,word*255)
+                print(f'write {index} image')
+                index += 1
             except:
                 print('error with image writing')
-            index+=1
-        img2 = visualize_and_plot(img, aabbs, 5)  # покеазываем как выделили слова
+        print(f'all words from image {i} were writen')
+        '''img2 = visualize_and_plot(img, aabbs, 5)  # покеазываем как выделили слова
         cv2.imshow('detected words', img2)
-        cv2.waitKey(0)
+        cv2.waitKey(0) '''
 
 
