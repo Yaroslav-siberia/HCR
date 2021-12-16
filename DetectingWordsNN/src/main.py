@@ -1,4 +1,4 @@
-from infer import extract_wordsNN
+from infer import extract_wordsNN, extract_strings
 
 from typing import List
 import os
@@ -26,11 +26,11 @@ def extract_words(input_path,output_path):
     middle_path = input_path.split('/')[0:-1]
     middle_path.append('middle')
     middle_path = '/'.join(x for x in middle_path)
-    if os.path.isdir(output_path):
-        print(f'директория директория промежуточных результатов {output_path} уже существует')
+    if os.path.isdir(middle_path):
+        print(f'директория директория промежуточных результатов {middle_path} уже существует')
     else:
         os.makedirs(middle_path)
-        print(f'директория директория промежуточных результатов {output_path} создана')
+        print(f'директория директория промежуточных результатов {middle_path} создана')
     #проверяем папку ку складываем
     if os.path.isdir(output_path):
         print(f'директория {output_path} уже существует')
@@ -50,9 +50,15 @@ def extract_words(input_path,output_path):
         cv2.imwrite(str(os.path.join(middle_path, f_name)),img)
     print('start ')
     # вызываем функцию поиска слов нейронной сетью
-    extract_wordsNN(middle_path,output_path,5)
+    #extract_wordsNN(middle_path,output_path,5)
+    extract_strings(middle_path, output_path, 5)
 
-extract_words('/home/ysiberia/Документы/GitHub/HCR/DetectingWordsNN/data/input', '/home/ysiberia/Документы/GitHub/HCR/DetectingWordsNN/data/output')
+extract_words('/home/ysiberia/Документы/GitHub/HCR/data/input', '/home/ysiberia/Документы/GitHub/HCR/data/strings')
+'''
+Надо обратить внимание на функцию _cluster_lines в файле infer 
+параметр min_words_per_line определяет количество слов в строке. то есть если в строке только одно слово - оно будет пропущена.
+этот параметр нужен для борьбы с ложными детектами нейронки и для борьбы с людьми, которые конец строки "задираю" ну и вообще пишут волной
+'''
 
 
 
