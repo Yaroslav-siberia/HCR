@@ -1,3 +1,7 @@
+# Handwriten text recognition dataset
+https://drive.google.com/file/d/1yYpe0iKnrZ9d4q5fmT09h4tAJudFyzig/view?usp=sharing
+
+
 # HCR
 contains Word Detectors and HandWritten Character Recognition for Russian Language
 
