@@ -10,9 +10,9 @@ import cv2
 import numpy as np
 import torch
 
-from aabb import AABB
-from coding import encode
-from utils import compute_scale_down, prob_true
+from DetectingWordsNN.src.aabb import AABB
+from DetectingWordsNN.src.coding import encode
+from DetectingWordsNN.src.utils import compute_scale_down, prob_true
 
 
 DataLoaderItem = namedtuple('DataLoaderItem', 'batch_imgs,batch_gt_maps,batch_aabbs')

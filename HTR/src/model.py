@@ -5,7 +5,7 @@ from typing import List, Tuple
 import numpy as np
 import tensorflow as tf
 
-from dataloader_iam import Batch
+from HTR.src.dataloader_iam import Batch
 
 # Disable eager mode
 tf.compat.v1.disable_eager_execution()
@@ -15,6 +15,7 @@ class DecoderType:
     """тестировал разные декодеры для улучшения результата """
     BestPath = 0 #норм
     BeamSearch = 1 #норм
+    WordBeamSearch = 2 #фигня, у него происходит "взрыв градиента"
 
 
 class Model:
@@ -109,6 +110,16 @@ class Model:
             self.decoder = tf.nn.ctc_beam_search_decoder(inputs=self.ctc_in_3d_tbc, sequence_length=self.seq_len,
                                                          beam_width=50)
 
+        elif self.decoder_type == DecoderType.WordBeamSearch:
+            # подготовка информации
+            chars = ''.join(self.char_list) # все символы которые будем учиться распознавать
+            word_chars = open('../model/charList.txt').read().splitlines()[0] # все тексты
+            corpus = open('../data/corpus.txt').read()
+            from word_beam_search import WordBeamSearch
+            self.decoder = WordBeamSearch(50, 'Words', 0.0, corpus.encode('utf8'), chars.encode('utf8'),
+                                          word_chars.encode('utf8'))
+            self.wbs_input = tf.nn.softmax(self.ctc_in_3d_tbc, axis=2)
+
     def setup_tf(self) -> Tuple[tf.compat.v1.Session, tf.compat.v1.train.Saver]:
         '''запуск тензорфлов и загрузка последней модели(если такая есть)'''
         print('Python: ' + sys.version)
@@ -117,7 +128,7 @@ class Model:
         sess = tf.compat.v1.Session()  # TF session
 
         saver = tf.compat.v1.train.Saver(max_to_keep=1)
-        model_dir = '../model/'
+        model_dir = './HTR/model/'
         latest_snapshot = tf.train.latest_checkpoint(model_dir)
 
         if self.must_restore and not latest_snapshot:
@@ -155,14 +166,17 @@ class Model:
     def decoder_output_to_text(self, ctc_output: tuple, batch_size: int) -> List[str]:
         """декодирование в текст"""
 
-        decoded = ctc_output[0][0]
+        if self.decoder_type == DecoderType.WordBeamSearch:
+            label_strs = ctc_output
+        else:
+            decoded = ctc_output[0][0]
 
-        label_strs = [[] for _ in range(batch_size)]
+            label_strs = [[] for _ in range(batch_size)]
 
-        for (idx, idx2d) in enumerate(decoded.indices):
-            label = decoded.values[idx]
-            batch_element = idx2d[0]
-            label_strs[batch_element].append(label)
+            for (idx, idx2d) in enumerate(decoded.indices):
+                label = decoded.values[idx]
+                batch_element = idx2d[0]
+                label_strs[batch_element].append(label)
 
         return [''.join([self.char_list[c] for c in labelStr]) for labelStr in label_strs]
 
@@ -203,7 +217,10 @@ class Model:
 
         num_batch_elements = len(batch.imgs)
         eval_list = []
-        eval_list.append(self.decoder)
+        if self.decoder_type == DecoderType.WordBeamSearch:
+            eval_list.append(self.wbs_input)
+        else:
+            eval_list.append(self.decoder)
         if self.dump or calc_probability:
             eval_list.append(self.ctc_in_3d_tbc)
 
@@ -214,7 +231,10 @@ class Model:
 
         eval_res = self.sess.run(eval_list, feed_dict)
 
-        decoded = self.decoder.compute(eval_res[0])
+        if self.decoder_type != DecoderType.WordBeamSearch:
+            decoded = eval_res[0]
+        else:
+            decoded = self.decoder.compute(eval_res[0])
 
         texts = self.decoder_output_to_text(decoded, num_batch_elements)
 

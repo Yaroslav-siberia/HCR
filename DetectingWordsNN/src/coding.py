@@ -4,7 +4,7 @@
 import cv2
 import numpy as np
 
-from aabb import AABB
+from DetectingWordsNN.src.aabb import AABB
 
 
 class MapOrdering:

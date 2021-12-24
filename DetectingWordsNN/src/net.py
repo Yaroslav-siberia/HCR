@@ -2,9 +2,9 @@
 import torch
 import torch.nn.functional as F
 
-from resnet import resnet18
-from coding import MapOrdering
-from utils import compute_scale_down
+from DetectingWordsNN.src.resnet import resnet18
+from DetectingWordsNN.src.coding import MapOrdering
+from DetectingWordsNN.src.utils import compute_scale_down
 
 
 class UpscaleAndConcatLayer(torch.nn.Module):

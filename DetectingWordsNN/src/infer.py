@@ -7,14 +7,31 @@ import argparse
 import torch
 from path import Path
 import cv2
-from dataloader import DataLoaderImgFile
-from eval import evaluate
-from net import WordDetectorNet
+from DetectingWordsNN.src.dataloader import DataLoaderImgFile
+from DetectingWordsNN.src.eval import evaluate
+from DetectingWordsNN.src.net import WordDetectorNet
 from typing import List
 import numpy as np
 from sklearn.cluster import DBSCAN
 from collections import defaultdict
 import matplotlib.pyplot as plt
+from collections import namedtuple
+
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print('Using device:', device)
+# подгружаем нашу нейронную сеть
+net = WordDetectorNet()  # получаем архитектуру нашей нейронной сети без весов
+#  загружаем веса нашей нейронной сети
+net.load_state_dict(torch.load('./DetectingWordsNN/model/weights', map_location=device))
+net.eval()  # переводим сеть в режим распознавания (вдруг она была в режиме обучения)
+net.to(device)  # отправляем нейронку на устройство которое выбрали
+
+def get_img_files(data_dir: Path) -> List[Path]:
+    res = []
+    for ext in ['*.png','*.jpeg', '*.jpg', '*.bmp']:
+        res += Path(data_dir).files(ext)
+    return res
 
 def sort_line(detections):
     """упорядочевание строк"""
@@ -88,49 +105,24 @@ def line_box(line):
     return x_min, x_max, y_min, y_max
 
 def extract_strings(input_path,output_path, delta):
-    '''
+    '''device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print('Using device:', device)'''
 
-    :param input_path: директория с изображениями для поиска
-    :param output_path: директория с сохраненными словами
-    :param delta: отступ от границ детекта в пикселях, сделано чтобы хваосты слов не обрезать
-    :return:
-    '''
-    #проверяем папку с исходными изображениями
-    ''' if os.path.isdir(Path(input_path)):
-        res=[]
-        for ext in ['*.png', '*.jpeg', '*.jpg', '*.bmp']:
-            res += Path(input_path).files(ext)
-        if len(res)== 0:
-            print('Изображений для обработки не обнаружено. проверьте путь')
-        else:
-            print(f"Найдено {len(res)} изображений для обработки.")
-    else:
-        print(f'директория {input_path} не существует')
-    #проверяем папку ку складываем
-    if os.path.isdir(output_path):
-        print(f'директория {output_path} уже существует')
-    else:
-        os.makedirs(output_path)
-        print(f'директория {output_path} создана')
-    # определяем устройство работы'''
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print('Using device:', device)
-
-    # подгружаем нашу нейронную сеть
+    '''# подгружаем нашу нейронную сеть
     net = WordDetectorNet()  # получаем архитектуру нашей нейронной сети без весов
     #  загружаем веса нашей нейронной сети
     net.load_state_dict(torch.load('../model/weights', map_location=device))
     net.eval()  # переводим сеть в режим распознавания (вдруг она была в режиме обучения)
-    net.to(device)  # отправляем нейронку на устройство которое выбрали
+    net.to(device)  # отправляем нейронку на устройство которое выбрали'''
 
     # создаем загрузчик изобраний
     loader = DataLoaderImgFile(Path(input_path), net.input_size, device)
-    res = evaluate(net, loader, max_aabbs=1000)  #max_aabbs максимальное число слов на листе. более чем достаточно
+    res = evaluate(net, loader, max_aabbs=1000)
+    # max_aabbs максимальное число слов на листе. более чем достаточно
     #приступаем к работе !!!!!!!!!!!!!
     # цикл по изображениям и спискам детектов на каждом
     num_colors = 8
     colors = plt.cm.get_cmap('rainbow', num_colors)
-    print(123)
     for i, (img, aabbs) in enumerate(zip(res.batch_imgs, res.batch_aabbs)):
         print(f'Processing {i} image')
         f = loader.get_scale_factor(i) # определяем направление изображения
@@ -150,9 +142,6 @@ def extract_strings(input_path,output_path, delta):
                 index += 1
             except:
                 print('error with image writing')
-
-
-
 
 def extract_wordsNN(input_path,output_path, delta):
     '''
@@ -216,5 +205,26 @@ def extract_wordsNN(input_path,output_path, delta):
         '''img2 = visualize_and_plot(img, aabbs, 5)  # покеазываем как выделили слова
         cv2.imshow('detected words', img2)
         cv2.waitKey(0) '''
+
+DetectItem = namedtuple('DetectItem','img_name, lines')
+
+def extract_words_sorted(input_path):
+    detection_list=[]
+    # создаем загрузчик изобраний
+    loader = DataLoaderImgFile(Path(input_path), net.input_size, device)
+    res = evaluate(net, loader, max_aabbs=1000)
+    # max_aabbs максимальное число слов на листе. более чем достаточно
+    # приступаем к работе !!!!!!!!!!!!!
+    # цикл по изображениям и спискам детектов на каждом
+    num_colors = 8
+
+    for i, (img, aabbs) in enumerate(zip(res.batch_imgs, res.batch_aabbs)):
+        print(f'Processing {i} image')
+        f = loader.get_scale_factor(i)  # определяем направление изображения
+        aabbs = [aabb.scale(1 / f, 1 / f) for aabb in aabbs]  # применяем это к рамкам
+        lines = sort_multiline(aabbs)
+        img, img_name = loader.get_original_img_with_name(i)  # получаем оригинальное изобра и его имя
+        detection_list.append(DetectItem(img_name,lines))
+    return detection_list
 
 

@@ -1,11 +1,10 @@
-from infer import extract_wordsNN, extract_strings
+from infer import extract_strings
 
 from typing import List
 import os
 from path import Path
 import cv2
 from resizing import resizing_img
-from scan_photo import scaner
 
 
 def get_img_files(data_dir: Path) -> List[Path]:
@@ -53,7 +52,7 @@ def extract_words(input_path,output_path):
     #extract_wordsNN(middle_path,output_path,5)
     extract_strings(middle_path, output_path, 5)
 
-extract_words('/home/ysiberia/Документы/GitHub/HCR/data/input', '/home/ysiberia/Документы/GitHub/HCR/data/strings')
+#extract_words('/home/ysiberia/Документы/GitHub/HCR/data/input', '/home/ysiberia/Документы/GitHub/HCR/data/strings')
 '''
 Надо обратить внимание на функцию _cluster_lines в файле infer 
 параметр min_words_per_line определяет количество слов в строке. то есть если в строке только одно слово - оно будет пропущена.

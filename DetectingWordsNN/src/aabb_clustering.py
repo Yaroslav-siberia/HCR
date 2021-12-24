@@ -3,8 +3,8 @@ from collections import defaultdict
 import numpy as np
 from sklearn.cluster import DBSCAN
 
-from aabb import AABB
-from iou import compute_dist_mat
+from DetectingWordsNN.src.aabb import AABB
+from DetectingWordsNN.src.iou import compute_dist_mat
 
 
 def cluster_aabbs(aabbs):

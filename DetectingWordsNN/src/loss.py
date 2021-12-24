@@ -5,7 +5,7 @@
 import torch
 import torch.nn.functional as F
 
-from coding import MapOrdering
+from DetectingWordsNN.src.coding import MapOrdering
 
 
 def compute_loss(y, gt_map):
