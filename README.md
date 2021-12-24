@@ -4,6 +4,9 @@ https://drive.google.com/file/d/1yYpe0iKnrZ9d4q5fmT09h4tAJudFyzig/view?usp=shari
 
 # HCR
 contains Word Detectors and HandWritten Character Recognition for Russian Language
+
+# HTR  
+Распознавание рукописного текста  
 Для обучения:
 В файле HTR/src/main закомментировать функцию recognition и 2 строки перед ней с созданием объектов decoder_type,model
 расскомментировать вызов функции start_train. Проверить настройки в функции start_train.
