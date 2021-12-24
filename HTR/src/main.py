@@ -187,6 +187,16 @@ def main():
         model = Model(list(open(FilePaths.fn_char_list).read()), decoder_type, must_restore=True, dump=args.dump)
         infer(model, args.img_file)
 
+def start_train():
+    data_dir = '/home/ysiberia/Документы/GitHub/HCR/HTR/data/dataset_clean'
+    batch_size = 4
+    decoder_type = DecoderType.BestPath
+    loader = DataLoaderIAM(Path(data_dir), batch_size)
+    char_list = loader.char_list
+    model = Model(char_list, decoder_type)
+    train(model, loader,line_mode=False, early_stopping=25)
+
+#start_train()
 
 #if __name__ == '__main__':
 #    main()
