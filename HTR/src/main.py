@@ -7,31 +7,31 @@ import editdistance
 from path import Path
 
 #для обучения
-'''from dataloader_iam import DataLoaderIAM, Batch
+from dataloader_iam import DataLoaderIAM, Batch
 from model import Model, DecoderType
-from preprocessor import Preprocessor'''
+from preprocessor import Preprocessor
 
 #для работы
-from HTR.src.dataloader_iam import DataLoaderIAM, Batch
+'''from HTR.src.dataloader_iam import DataLoaderIAM, Batch
 from HTR.src.model import Model, DecoderType
-from HTR.src.preprocessor import Preprocessor
+from HTR.src.preprocessor import Preprocessor'''
 
 #для обучения
-'''class FilePaths:
+class FilePaths:
     """Filenames and paths to data."""
     fn_char_list = '../model/charList.txt'
     fn_summary = '../model/summary.json'
-    fn_corpus = '../model/corpus.txt'''
+    fn_corpus = '../model/corpus.txt'
 
 #для работы
-class FilePaths:
+'''class FilePaths:
     """Filenames and paths to data."""
     fn_char_list = './HTR/model/charList.txt'
     fn_summary = './HTR/model/summary.json'
-    fn_corpus = './HTR/model/corpus.txt'
+    fn_corpus = './HTR/model/corpus.txt'''
 
 #Для работы
-decoder_type = DecoderType.BestPath # DecoderType.BeamSearch
+'''decoder_type = DecoderType.BestPath # DecoderType.BeamSearch
 model = Model(list(open(FilePaths.fn_char_list).read()), decoder_type, must_restore=True)
 def recognition(img, model = model) -> None:
     """распознавание текста на изображении"""
@@ -43,7 +43,7 @@ def recognition(img, model = model) -> None:
 
     batch = Batch([img], None, 1)
     recognized, probability = model.infer_batch(batch, True)
-    return recognized
+    return recognized'''
 
 def get_img_height() -> int:
     return 32

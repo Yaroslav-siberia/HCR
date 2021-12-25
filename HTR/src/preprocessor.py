@@ -5,10 +5,10 @@ import cv2
 import numpy as np
 
 #для обучения
-#from dataloader_iam import Batch
+from dataloader_iam import Batch
 
 #для работы
-from HTR.src.dataloader_iam import Batch
+'''from HTR.src.dataloader_iam import Batch'''
 
 class Preprocessor:
     def __init__(self,
