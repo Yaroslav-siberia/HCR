@@ -6,17 +6,44 @@ import cv2
 import editdistance
 from path import Path
 
+#для обучения
+'''from dataloader_iam import DataLoaderIAM, Batch
+from model import Model, DecoderType
+from preprocessor import Preprocessor'''
+
+#для работы
 from HTR.src.dataloader_iam import DataLoaderIAM, Batch
 from HTR.src.model import Model, DecoderType
 from HTR.src.preprocessor import Preprocessor
 
+#для обучения
+'''class FilePaths:
+    """Filenames and paths to data."""
+    fn_char_list = '../model/charList.txt'
+    fn_summary = '../model/summary.json'
+    fn_corpus = '../model/corpus.txt'''
 
+#для работы
 class FilePaths:
     """Filenames and paths to data."""
     fn_char_list = './HTR/model/charList.txt'
     fn_summary = './HTR/model/summary.json'
     fn_corpus = './HTR/model/corpus.txt'
 
+#Для работы
+decoder_type = DecoderType.BestPath # DecoderType.BeamSearch
+model = Model(list(open(FilePaths.fn_char_list).read()), decoder_type, must_restore=True)
+def recognition(img, model = model) -> None:
+    """распознавание текста на изображении"""
+    #img = cv2.imread(fn_img, cv2.IMREAD_GRAYSCALE)
+    #assert img is not None
+
+    preprocessor = Preprocessor(get_img_size(), dynamic_width=True, padding=16)
+    img = preprocessor.process_img(img)
+
+    batch = Batch([img], None, 1)
+    recognized, probability = model.infer_batch(batch, True)
+    return recognized
 
 def get_img_height() -> int:
     return 32
@@ -123,21 +150,6 @@ def infer(model: Model, fn_img: Path) -> None:
     print(f'Recognized: "{recognized[0]}"')
     print(f'Probability: {probability[0]}')
 
-decoder_type = DecoderType.BestPath # DecoderType.BeamSearch
-model = Model(list(open(FilePaths.fn_char_list).read()), decoder_type, must_restore=True)
-def recognition(img, model = model) -> None:
-    """распознавание текста на изображении"""
-    #img = cv2.imread(fn_img, cv2.IMREAD_GRAYSCALE)
-    #assert img is not None
-
-    preprocessor = Preprocessor(get_img_size(), dynamic_width=True, padding=16)
-    img = preprocessor.process_img(img)
-
-    batch = Batch([img], None, 1)
-    recognized, probability = model.infer_batch(batch, True)
-    return recognized
-
-
 
 def main():
     """Main function."""
@@ -187,6 +199,16 @@ def main():
         model = Model(list(open(FilePaths.fn_char_list).read()), decoder_type, must_restore=True, dump=args.dump)
         infer(model, args.img_file)
 
+def start_train():
+    data_dir = '/home/ysiberia/Документы/GitHub/HCR/HTR/data/dataset_clean'
+    batch_size = 4
+    decoder_type = DecoderType.BestPath
+    loader = DataLoaderIAM(Path(data_dir), batch_size)
+    char_list = loader.char_list
+    model = Model(char_list, decoder_type)
+    train(model, loader,line_mode=False, early_stopping=25)
 
-#if __name__ == '__main__':
-#    main()
+#start_train()
+
+if __name__ == '__main__':
+    main()

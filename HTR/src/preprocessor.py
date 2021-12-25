@@ -4,8 +4,11 @@ from typing import Tuple
 import cv2
 import numpy as np
 
-from HTR.src.dataloader_iam import Batch
+#для обучения
+#from dataloader_iam import Batch
 
+#для работы
+from HTR.src.dataloader_iam import Batch
 
 class Preprocessor:
     def __init__(self,

@@ -5,6 +5,10 @@ from typing import List, Tuple
 import numpy as np
 import tensorflow as tf
 
+#для обучения
+#from dataloader_iam import Batch
+
+#для работы
 from HTR.src.dataloader_iam import Batch
 
 # Disable eager mode
