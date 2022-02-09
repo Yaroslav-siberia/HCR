@@ -6,13 +6,13 @@ contains Word Detectors and HandWritten Character Recognition for Russian Langua
 расскомментировать вызов функции start_train. Проверить настройки в функции start_train.
 Запустить HTR/src/main
 
-# resizing
+## resizing
 Изменение разрешения изображения, уменьшает если наибольшая сторона изображения превышает пороговое значение
 
-# DetectingWordsNN
+## DetectingWordsNN
 Детектирование слов рукописного текста на изображении с использованием нейронных сетей
 Более подробное описание и инструкция находятся внутри DetectingWordsNN
 
-# Запуск
+## Запуск
 Для распознавания запустить скрипт text_recognition.py
  
