@@ -1,6 +1,6 @@
 
 # HCR
-contains Word Detectors and HandWritten Character Recognition for Russian Language
+содержит Word Detectors and HandWritten Character Recognition для русского языка
 Для обучения:
 В файле HTR/src/main закомментировать функцию recognition и 2 строки перед ней с созданием объектов decoder_type,model
 расскомментировать вызов функции start_train. Проверить настройки в функции start_train.
